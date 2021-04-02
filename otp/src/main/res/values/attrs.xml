@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <declare-styleable name="OtpCodeView">
+        <attr name="otpLineColor" format="color"/>
+        <attr name="otpLineWidth" format="dimension"/>
+        <attr name="otpTextColor" format="color" />
+        <attr name="otpTextNumber" format="integer" />
+    </declare-styleable>
+</resources>
