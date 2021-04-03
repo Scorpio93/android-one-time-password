@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.Resources
 import android.content.res.TypedArray
 import android.graphics.Canvas
+import android.graphics.Color
 import android.graphics.Paint
 import android.graphics.PointF
 import android.text.InputType
@@ -35,6 +36,8 @@ class OtpCodeView @JvmOverloads constructor(
     private var otpLineColor = 0
     private var otpLineWidth = 0F
     private var otpTextColor = 0
+    private var otpHighlightNextSymbol = false
+    private var otpHighlightNextColor = 0
     private var otpTextSize = 0
         set(value) {
             field = value.coerceAtLeast(MIX_SYMBOL_SIZE)
@@ -45,11 +48,10 @@ class OtpCodeView @JvmOverloads constructor(
             try {
                 otpLineColor = typedArray.getColor(R.styleable.OtpCodeView_otpLineColor, 0)
                 otpLineWidth = typedArray.getDimension(R.styleable.OtpCodeView_otpLineWidth, 0F)
-                otpTextSize = typedArray.getInt(
-                    R.styleable.OtpCodeView_otpTextNumber,
-                    MIX_SYMBOL_SIZE
-                )
+                otpTextSize = typedArray.getInt(R.styleable.OtpCodeView_otpTextNumber, MIX_SYMBOL_SIZE)
                 otpTextColor = typedArray.getColor(R.styleable.OtpCodeView_otpTextColor, 0)
+                otpHighlightNextSymbol = typedArray.getBoolean(R.styleable.OtpCodeView_otpHighlightNextSymbol, false)
+                otpHighlightNextColor = typedArray.getColor(R.styleable.OtpCodeView_otpHighlightNextColor, 0)
             } finally {
                 recycle()
             }
@@ -81,7 +83,7 @@ class OtpCodeView @JvmOverloads constructor(
         textAlign = Paint.Align.CENTER
         isFocusableInTouchMode = true
         color = otpTextColor
-        textSize = 8F // TODO: It's dimension in pixels yet
+        textSize = 50F // TODO: It's dimension in pixels yet
     }
 
     override fun onCreateInputConnection(outAttrs: EditorInfo?): InputConnection {
@@ -132,8 +134,8 @@ class OtpCodeView @JvmOverloads constructor(
         viewWidth = measureDimension(desiredWidth, widthMeasureSpec)
         viewHeight = measureDimension(desiredHeight, heightMeasureSpec)
 
-        blankLine = viewWidth / (otpTextSize * 2F)
-        solidLine = viewWidth / (otpTextSize * 2F)
+        blankLine = viewWidth / (otpTextSize * 2F - 1)
+        solidLine = viewWidth / (otpTextSize * 2F - 1)
 
         textPaint.textSize = solidLine
 
@@ -167,6 +169,10 @@ class OtpCodeView @JvmOverloads constructor(
         val baseLine: Float = viewHeight.toFloat() / 2 + (fontMetricsInt.bottom - fontMetricsInt.top) / 2 - fontMetricsInt.bottom
 
         for (i in 0 until otpTextSize) {
+            val highlightIndex = codeBuilder.length
+            val needToHighlight = highlightIndex == i
+            linePaint.color = if (needToHighlight and otpHighlightNextSymbol) otpHighlightNextColor else otpLineColor
+
             if (inputLength > i) {
                 canvas?.drawText(
                     codeBuilder.toString(),
