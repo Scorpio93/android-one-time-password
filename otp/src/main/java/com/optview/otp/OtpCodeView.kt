@@ -6,26 +6,31 @@ import android.content.res.TypedArray
 import android.graphics.Canvas
 import android.graphics.Paint
 import android.graphics.PointF
-import android.os.Parcelable
 import android.text.InputType
+import android.text.TextPaint
 import android.util.AttributeSet
+import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.BaseInputConnection
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
-import java.lang.StringBuilder
 
 
 private const val MIX_SYMBOL_SIZE = 4
 
 class OtpCodeView @JvmOverloads constructor(
-        context: Context,
-        attrs: AttributeSet? = null,
-        defStyle: Int = 0
+    context: Context,
+    attrs: AttributeSet? = null,
+    defStyle: Int = 0
 ) : View(context, attrs, defStyle) {
 
-    private val typedArray: TypedArray by lazy { context.obtainStyledAttributes(attrs, R.styleable.OtpCodeView) }
+    private val typedArray: TypedArray by lazy {
+        context.obtainStyledAttributes(
+            attrs,
+            R.styleable.OtpCodeView
+        )
+    }
 
     private var otpLineColor = 0
     private var otpLineWidth = 0F
@@ -35,14 +40,15 @@ class OtpCodeView @JvmOverloads constructor(
             field = value.coerceAtLeast(MIX_SYMBOL_SIZE)
         }
 
-    private val systemMetrics by lazy { Resources.getSystem().displayMetrics }
-
     init {
         context.theme.obtainStyledAttributes(attrs, R.styleable.OtpCodeView, 0, 0).apply {
             try {
                 otpLineColor = typedArray.getColor(R.styleable.OtpCodeView_otpLineColor, 0)
                 otpLineWidth = typedArray.getDimension(R.styleable.OtpCodeView_otpLineWidth, 0F)
-                otpTextSize = typedArray.getInt(R.styleable.OtpCodeView_otpTextNumber, MIX_SYMBOL_SIZE)
+                otpTextSize = typedArray.getInt(
+                    R.styleable.OtpCodeView_otpTextNumber,
+                    MIX_SYMBOL_SIZE
+                )
                 otpTextColor = typedArray.getColor(R.styleable.OtpCodeView_otpTextColor, 0)
             } finally {
                 recycle()
@@ -51,16 +57,16 @@ class OtpCodeView @JvmOverloads constructor(
         isSaveEnabled = true
     }
 
-    private var textChangeListener : OnTextChangeListener? = null
-    private var viewHeight: Int = 0
+    private var textChangeListener: OnTextChangeListener? = null
     private var viewWidth: Int = 0
+    private var viewHeight: Int = 0
 
     private val codeBuilder: StringBuilder by lazy { StringBuilder() }
 
     private var blankLine = 0F
     private var solidLine = 0F
 
-    private var solidPoints : Array<PointF?>? = null
+    private var solidPoints: Array<PointF?>? = null
 
     private val linePaint = Paint().apply {
         isAntiAlias = true
@@ -69,18 +75,24 @@ class OtpCodeView @JvmOverloads constructor(
         strokeCap = Paint.Cap.ROUND
     }
 
-    private val textPaint = Paint().apply {
+    private val textPaint = TextPaint().apply {
         isAntiAlias = true
         style = Paint.Style.FILL_AND_STROKE
         textAlign = Paint.Align.CENTER
         isFocusableInTouchMode = true
         color = otpTextColor
+        textSize = 8F // TODO: It's dimension in pixels yet
     }
 
     override fun onCreateInputConnection(outAttrs: EditorInfo?): InputConnection {
         val baseInputConnection: BaseInputConnection = object : BaseInputConnection(this, false) {
             override fun deleteSurroundingText(beforeLength: Int, afterLength: Int): Boolean {
-                val downKeyAction = sendKeyEvent(KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL))
+                val downKeyAction = sendKeyEvent(
+                    KeyEvent(
+                        KeyEvent.ACTION_DOWN,
+                        KeyEvent.KEYCODE_DEL
+                    )
+                )
                 val upKeyAction = sendKeyEvent(KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL))
                 return downKeyAction && upKeyAction
             }
@@ -114,26 +126,37 @@ class OtpCodeView @JvmOverloads constructor(
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec)
 
-        val widthMode = MeasureSpec.getMode(widthMeasureSpec)
-        val heightMode = MeasureSpec.getMode(heightMeasureSpec)
-        viewWidth = MeasureSpec.getSize(widthMode)
-        viewHeight = MeasureSpec.getSize(heightMode)
+        val desiredWidth = suggestedMinimumWidth + paddingLeft + paddingRight
+        val desiredHeight = suggestedMinimumHeight + paddingTop + paddingBottom
 
-        if (widthMode == MeasureSpec.AT_MOST) {
-            viewWidth = systemMetrics.widthPixels * 2 / 3
-        }
+        viewWidth = measureDimension(desiredWidth, widthMeasureSpec)
+        viewHeight = measureDimension(desiredHeight, heightMeasureSpec)
 
-        if (heightMode == MeasureSpec.AT_MOST) {
-            viewHeight = systemMetrics.heightPixels / 14
-        }
-
-        blankLine = viewWidth / (4F * otpTextSize - 1)
-        solidLine = viewWidth / (4F * otpTextSize - 1) * 3
+        blankLine = viewWidth / (otpTextSize * 2F)
+        solidLine = viewWidth / (otpTextSize * 2F)
 
         textPaint.textSize = solidLine
 
         calculateStartAndEndPoint(otpTextSize)
-        setMeasuredDimension(viewWidth, viewHeight)
+        setMeasuredDimension(
+            viewWidth,
+            viewHeight
+        )
+    }
+
+    private fun measureDimension(desiredSize: Int, measureSpec: Int): Int {
+        var result: Int
+        val specMode = MeasureSpec.getMode(measureSpec)
+        val specSize = MeasureSpec.getSize(measureSpec)
+        if (specMode == MeasureSpec.EXACTLY) {
+            result = specSize
+        } else {
+            result = desiredSize
+            if (specMode == MeasureSpec.AT_MOST) {
+                result = result.coerceAtMost(specSize)
+            }
+        }
+        return result
     }
 
     override fun onDraw(canvas: Canvas?) {
@@ -141,26 +164,42 @@ class OtpCodeView @JvmOverloads constructor(
         val inputLength = codeBuilder.length
         val fontMetricsInt = textPaint.fontMetricsInt
         val linePosY = viewHeight / 2F
-        val baseLine : Float = (viewHeight / 2 + (fontMetricsInt.bottom - fontMetricsInt.top) / 2 - fontMetricsInt.bottom).toFloat()
+        val baseLine: Float = viewHeight.toFloat() / 2 + (fontMetricsInt.bottom - fontMetricsInt.top) / 2 - fontMetricsInt.bottom
 
         for (i in 0 until otpTextSize) {
             if (inputLength > i) {
-                canvas?.drawText(codeBuilder.toString(), i, i + 1, solidPoints!![i]!!.y - solidLine / 2, baseLine, textPaint)
+                canvas?.drawText(
+                    codeBuilder.toString(),
+                    i,
+                    i + 1,
+                    solidPoints!![i]!!.y - solidLine / 2,
+                    baseLine,
+                    textPaint
+                )
             } else {
-                canvas?.drawLine(solidPoints!![i]!!.x + paddingLeft, linePosY, solidPoints!![i]!!.y - paddingRight, linePosY, linePaint)
+                canvas?.drawLine(
+                    solidPoints!![i]!!.x,
+                    linePosY,
+                    solidPoints!![i]!!.y,
+                    linePosY,
+                    linePaint
+                )
             }
         }
     }
 
-    private fun calculateStartAndEndPoint(textSize : Int) {
+    private fun calculateStartAndEndPoint(textSize: Int) {
         solidPoints = arrayOfNulls(textSize)
         for (i in 1..otpTextSize) {
-            val point = PointF((i - 1) * blankLine + (i - 1) * solidLine, (i - 1) * blankLine + i * solidLine)
+            val point = PointF(
+                (i - 1) * blankLine + (i - 1) * solidLine,
+                (i - 1) * blankLine + i * solidLine
+            )
             solidPoints!![i - 1] = point
         }
     }
 
-    fun setText(code : String) {
+    fun setText(code: String) {
         if (code.length > otpTextSize) return
         if (code.length == otpTextSize) textChangeListener?.textEntered(code)
         if (codeBuilder.isNotBlank()) codeBuilder.clear()
