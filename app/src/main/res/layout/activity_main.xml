@@ -23,6 +23,7 @@
         app:otpTextNumber="5"
         app:otpHighlightNextSymbol="true"
         app:otpHighlightNextColor="@color/white"
+        android:background="@color/black"
         tools:ignore="LabelFor" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -60,15 +60,7 @@ class OtpCodeView @JvmOverloads constructor(
     }
 
     private var textChangeListener: OnTextChangeListener? = null
-    private var viewWidth: Int = 0
-    private var viewHeight: Int = 0
-
     private val codeBuilder: StringBuilder by lazy { StringBuilder() }
-
-    private var blankLine = 0F
-    private var solidLine = 0F
-
-    private var solidPoints: Array<PointF?>? = null
 
     private val linePaint = Paint().apply {
         isAntiAlias = true
@@ -77,13 +69,19 @@ class OtpCodeView @JvmOverloads constructor(
         strokeCap = Paint.Cap.ROUND
     }
 
+    private val backgroundPaint = Paint().apply {
+        isAntiAlias = true
+        color = Color.CYAN
+        alpha = 20
+    }
+
     private val textPaint = TextPaint().apply {
         isAntiAlias = true
         style = Paint.Style.FILL_AND_STROKE
         textAlign = Paint.Align.CENTER
         isFocusableInTouchMode = true
         color = otpTextColor
-        textSize = 50F // TODO: It's dimension in pixels yet
+        textSize = 36F
     }
 
     override fun onCreateInputConnection(outAttrs: EditorInfo?): InputConnection {
@@ -125,83 +123,42 @@ class OtpCodeView @JvmOverloads constructor(
         return super.onKeyDown(keyCode, event)
     }
 
-    override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
-        super.onMeasure(widthMeasureSpec, heightMeasureSpec)
-
-        val desiredWidth = suggestedMinimumWidth + paddingLeft + paddingRight
-        val desiredHeight = suggestedMinimumHeight + paddingTop + paddingBottom
-
-        viewWidth = measureDimension(desiredWidth, widthMeasureSpec)
-        viewHeight = measureDimension(desiredHeight, heightMeasureSpec)
-
-        blankLine = viewWidth / (otpTextSize * 2F - 1)
-        solidLine = viewWidth / (otpTextSize * 2F - 1)
-
-        textPaint.textSize = solidLine
-
-        calculateStartAndEndPoint(otpTextSize)
-        setMeasuredDimension(
-            viewWidth,
-            viewHeight
-        )
-    }
-
-    private fun measureDimension(desiredSize: Int, measureSpec: Int): Int {
-        var result: Int
-        val specMode = MeasureSpec.getMode(measureSpec)
-        val specSize = MeasureSpec.getSize(measureSpec)
-        if (specMode == MeasureSpec.EXACTLY) {
-            result = specSize
-        } else {
-            result = desiredSize
-            if (specMode == MeasureSpec.AT_MOST) {
-                result = result.coerceAtMost(specSize)
-            }
-        }
-        return result
-    }
-
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
         val inputLength = codeBuilder.length
-        val fontMetricsInt = textPaint.fontMetricsInt
-        val linePosY = viewHeight / 2F
-        val baseLine: Float = viewHeight.toFloat() / 2 + (fontMetricsInt.bottom - fontMetricsInt.top) / 2 - fontMetricsInt.bottom
 
         for (i in 0 until otpTextSize) {
             val highlightIndex = codeBuilder.length
             val needToHighlight = highlightIndex == i
             linePaint.color = if (needToHighlight and otpHighlightNextSymbol) otpHighlightNextColor else otpLineColor
 
+
+            val currentHostStepWidth = width / otpTextSize
+            val halfCurrentHostWidth = currentHostStepWidth / 2F
+            val halfCurrentHostHeight = height / 2F
+            val currentHostWidth = currentHostStepWidth * i.toFloat()
+
+
+            canvas?.drawRect(0F, 0F, currentHostWidth, currentHostWidth, backgroundPaint)
+
             if (inputLength > i) {
                 canvas?.drawText(
                     codeBuilder.toString(),
                     i,
                     i + 1,
-                    solidPoints!![i]!!.y - solidLine / 2,
-                    baseLine,
+                    currentHostWidth + halfCurrentHostWidth,
+                    halfCurrentHostHeight - (textPaint.descent() + textPaint.ascent()) / 2F,
                     textPaint
                 )
             } else {
                 canvas?.drawLine(
-                    solidPoints!![i]!!.x,
-                    linePosY,
-                    solidPoints!![i]!!.y,
-                    linePosY,
+                    (currentHostWidth - 10) + halfCurrentHostWidth,
+                    halfCurrentHostHeight,
+                    (currentHostWidth + 10) + halfCurrentHostWidth,
+                    halfCurrentHostHeight,
                     linePaint
                 )
             }
-        }
-    }
-
-    private fun calculateStartAndEndPoint(textSize: Int) {
-        solidPoints = arrayOfNulls(textSize)
-        for (i in 1..otpTextSize) {
-            val point = PointF(
-                (i - 1) * blankLine + (i - 1) * solidLine,
-                (i - 1) * blankLine + i * solidLine
-            )
-            solidPoints!![i - 1] = point
         }
     }
 
