@@ -1,21 +1,19 @@
 package com.optview.otp
 
 import android.content.Context
-import android.content.res.Resources
 import android.content.res.TypedArray
 import android.graphics.Canvas
 import android.graphics.Color
 import android.graphics.Paint
-import android.graphics.PointF
 import android.text.InputType
 import android.text.TextPaint
 import android.util.AttributeSet
-import android.util.Log
 import android.view.KeyEvent
 import android.view.View
 import android.view.inputmethod.BaseInputConnection
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
+import androidx.core.content.res.ResourcesCompat
 
 
 private const val MIX_SYMBOL_SIZE = 4
@@ -35,10 +33,13 @@ class OtpCodeView @JvmOverloads constructor(
 
     private var otpLineColor = 0
     private var otpLineWidth = 0F
+    private var otpLineStrokeWidth = 0F
     private var otpTextColor = 0
     private var otpHighlightNextSymbol = false
     private var otpHighlightNextColor = 0
-    private var otpTextSize = 0
+    private var otpTextSize = 0F
+    private var otpFontFamily = 0
+    private var otpMaxSymbolsAmount = 0
         set(value) {
             field = value.coerceAtLeast(MIX_SYMBOL_SIZE)
         }
@@ -48,10 +49,13 @@ class OtpCodeView @JvmOverloads constructor(
             try {
                 otpLineColor = typedArray.getColor(R.styleable.OtpCodeView_otpLineColor, 0)
                 otpLineWidth = typedArray.getDimension(R.styleable.OtpCodeView_otpLineWidth, 0F)
-                otpTextSize = typedArray.getInt(R.styleable.OtpCodeView_otpTextNumber, MIX_SYMBOL_SIZE)
+                otpLineStrokeWidth = typedArray.getDimension(R.styleable.OtpCodeView_otpLineStrokeWidth, 0F)
+                otpMaxSymbolsAmount = typedArray.getInt(R.styleable.OtpCodeView_otpMaxSymbolsAmount, MIX_SYMBOL_SIZE)
                 otpTextColor = typedArray.getColor(R.styleable.OtpCodeView_otpTextColor, 0)
                 otpHighlightNextSymbol = typedArray.getBoolean(R.styleable.OtpCodeView_otpHighlightNextSymbol, false)
                 otpHighlightNextColor = typedArray.getColor(R.styleable.OtpCodeView_otpHighlightNextColor, 0)
+                otpTextSize = typedArray.getDimension(R.styleable.OtpCodeView_otpTextSize, 0f)
+                otpFontFamily = typedArray.getResourceId(R.styleable.OtpCodeView_otpFontFamily, 0)
             } finally {
                 recycle()
             }
@@ -65,7 +69,7 @@ class OtpCodeView @JvmOverloads constructor(
     private val linePaint = Paint().apply {
         isAntiAlias = true
         color = otpLineColor
-        strokeWidth = otpLineWidth
+        strokeWidth = otpLineStrokeWidth
         strokeCap = Paint.Cap.ROUND
     }
 
@@ -81,7 +85,7 @@ class OtpCodeView @JvmOverloads constructor(
         textAlign = Paint.Align.CENTER
         isFocusableInTouchMode = true
         color = otpTextColor
-        textSize = 36F
+        textSize = otpTextSize
     }
 
     override fun onCreateInputConnection(outAttrs: EditorInfo?): InputConnection {
@@ -112,12 +116,12 @@ class OtpCodeView @JvmOverloads constructor(
         if (keyCode == KeyEvent.KEYCODE_DEL && codeBuilder.isNotEmpty()) {
             codeBuilder.deleteCharAt(codeBuilder.length - 1)
             invalidate()
-        } else if (keyCode in KeyEvent.KEYCODE_0..KeyEvent.KEYCODE_9 && codeBuilder.length < otpTextSize) {
+        } else if (keyCode in KeyEvent.KEYCODE_0..KeyEvent.KEYCODE_9 && codeBuilder.length < otpMaxSymbolsAmount) {
             codeBuilder.append(event?.displayLabel)
             invalidate()
         }
 
-        if (codeBuilder.length >= otpTextSize || keyCode == KeyEvent.KEYCODE_ENTER) {
+        if (codeBuilder.length >= otpMaxSymbolsAmount || keyCode == KeyEvent.KEYCODE_ENTER) {
             textChangeListener?.textEntered(codeBuilder.toString())
         }
         return super.onKeyDown(keyCode, event)
@@ -125,19 +129,21 @@ class OtpCodeView @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
+        val typeface = ResourcesCompat.getFont(context, otpFontFamily)
+        textPaint.typeface = typeface
+
         val inputLength = codeBuilder.length
 
-        for (i in 0 until otpTextSize) {
+        for (i in 0 until otpMaxSymbolsAmount) {
             val highlightIndex = codeBuilder.length
             val needToHighlight = highlightIndex == i
             linePaint.color = if (needToHighlight and otpHighlightNextSymbol) otpHighlightNextColor else otpLineColor
 
-
-            val currentHostStepWidth = width / otpTextSize
+            val currentHostStepWidth = width / otpMaxSymbolsAmount
             val halfCurrentHostWidth = currentHostStepWidth / 2F
             val halfCurrentHostHeight = height / 2F
             val currentHostWidth = currentHostStepWidth * i.toFloat()
-
+            val halfLineWidth = otpLineWidth / 2F
 
             canvas?.drawRect(0F, 0F, currentHostWidth, currentHostWidth, backgroundPaint)
 
@@ -152,9 +158,9 @@ class OtpCodeView @JvmOverloads constructor(
                 )
             } else {
                 canvas?.drawLine(
-                    (currentHostWidth - 10) + halfCurrentHostWidth,
+                    (currentHostWidth - halfLineWidth) + halfCurrentHostWidth,
                     halfCurrentHostHeight,
-                    (currentHostWidth + 10) + halfCurrentHostWidth,
+                    (currentHostWidth + halfLineWidth) + halfCurrentHostWidth,
                     halfCurrentHostHeight,
                     linePaint
                 )
@@ -163,8 +169,8 @@ class OtpCodeView @JvmOverloads constructor(
     }
 
     fun setText(code: String) {
-        if (code.length > otpTextSize) return
-        if (code.length == otpTextSize) textChangeListener?.textEntered(code)
+        if (code.length > otpMaxSymbolsAmount) return
+        if (code.length == otpMaxSymbolsAmount) textChangeListener?.textEntered(code)
         if (codeBuilder.isNotBlank()) codeBuilder.clear()
         codeBuilder.append(code)
         invalidate()

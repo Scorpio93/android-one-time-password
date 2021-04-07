@@ -18,12 +18,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:otpLineColor="@android:color/darker_gray"
-        app:otpLineWidth="1dp"
+        app:otpLineWidth="16dp"
+        app:otpLineStrokeWidth="2dp"
         app:otpTextColor="@android:color/darker_gray"
-        app:otpTextNumber="5"
+        app:otpMaxSymbolsAmount="5"
         app:otpHighlightNextSymbol="true"
         app:otpHighlightNextColor="@color/white"
         android:background="@color/black"
+        app:otpTextSize="24dp"
+        app:otpFontFamily="@font/train_one_regular"
         tools:ignore="LabelFor" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

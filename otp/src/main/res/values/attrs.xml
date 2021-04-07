@@ -3,9 +3,12 @@
     <declare-styleable name="OtpCodeView">
         <attr name="otpLineColor" format="color"/>
         <attr name="otpLineWidth" format="dimension"/>
+        <attr name="otpLineStrokeWidth" format="dimension"/>
+        <attr name="otpFontFamily" format="reference" />
         <attr name="otpTextColor" format="color" />
-        <attr name="otpTextNumber" format="integer" />
+        <attr name="otpMaxSymbolsAmount" format="integer" />
         <attr name="otpHighlightNextSymbol" format="boolean"/>
         <attr name="otpHighlightNextColor" format="color" />
+        <attr name="otpTextSize" format="dimension" />
     </declare-styleable>
 </resources>
