@@ -14,6 +14,7 @@ import android.view.inputmethod.BaseInputConnection
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
 import androidx.core.content.res.ResourcesCompat
+import com.optview.otp.textHolders.*
 
 
 private const val MIX_SYMBOL_SIZE = 4
@@ -39,6 +40,7 @@ class OtpCodeView @JvmOverloads constructor(
     private var otpHighlightNextColor = 0
     private var otpTextSize = 0F
     private var otpFontFamily = 0
+    private var textHolderType : TextHolderType = TextHolderType.NONE
     private var otpMaxSymbolsAmount = 0
         set(value) {
             field = value.coerceAtLeast(MIX_SYMBOL_SIZE)
@@ -56,13 +58,14 @@ class OtpCodeView @JvmOverloads constructor(
                 otpHighlightNextColor = typedArray.getColor(R.styleable.OtpCodeView_otpHighlightNextColor, 0)
                 otpTextSize = typedArray.getDimension(R.styleable.OtpCodeView_otpTextSize, 0f)
                 otpFontFamily = typedArray.getResourceId(R.styleable.OtpCodeView_otpFontFamily, 0)
+                textHolderType = typedArray.getEnum(R.styleable.OtpCodeView_textHolderShape, TextHolderType.NONE)
             } finally {
                 recycle()
             }
         }
-        isSaveEnabled = true
     }
 
+    private val textHolder: TextHolder = TextHolderFactory.getShape(textHolderType)
     private var textChangeListener: OnTextChangeListener? = null
     private val codeBuilder: StringBuilder by lazy { StringBuilder() }
 
@@ -137,7 +140,8 @@ class OtpCodeView @JvmOverloads constructor(
         for (i in 0 until otpMaxSymbolsAmount) {
             val highlightIndex = codeBuilder.length
             val needToHighlight = highlightIndex == i
-            linePaint.color = if (needToHighlight and otpHighlightNextSymbol) otpHighlightNextColor else otpLineColor
+            linePaint.color =
+                if (needToHighlight and otpHighlightNextSymbol) otpHighlightNextColor else otpLineColor
 
             val currentHostStepWidth = width / otpMaxSymbolsAmount
             val halfCurrentHostWidth = currentHostStepWidth / 2F
@@ -157,12 +161,14 @@ class OtpCodeView @JvmOverloads constructor(
                     textPaint
                 )
             } else {
-                canvas?.drawLine(
-                    (currentHostWidth - halfLineWidth) + halfCurrentHostWidth,
+                textHolder.drawHolder(
+                    currentHostWidth + halfCurrentHostWidth,
                     halfCurrentHostHeight,
-                    (currentHostWidth + halfLineWidth) + halfCurrentHostWidth,
+                    currentHostWidth + halfCurrentHostWidth,
                     halfCurrentHostHeight,
-                    linePaint
+                    halfLineWidth / 2F,
+                    linePaint,
+                    canvas
                 )
             }
         }

@@ -1,14 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="OtpCodeView">
-        <attr name="otpLineColor" format="color"/>
-        <attr name="otpLineWidth" format="dimension"/>
-        <attr name="otpLineStrokeWidth" format="dimension"/>
+        <attr name="otpLineColor" format="color" />
+        <attr name="otpLineWidth" format="dimension" />
+        <attr name="otpLineStrokeWidth" format="dimension" />
         <attr name="otpFontFamily" format="reference" />
         <attr name="otpTextColor" format="color" />
         <attr name="otpMaxSymbolsAmount" format="integer" />
-        <attr name="otpHighlightNextSymbol" format="boolean"/>
+        <attr name="otpHighlightNextSymbol" format="boolean" />
         <attr name="otpHighlightNextColor" format="color" />
         <attr name="otpTextSize" format="dimension" />
+
+        <attr name="textHolderShape" format="enum">
+            <enum name="none" value="0" />
+            <enum name="line" value="1" />
+            <enum name="circle" value="2" />
+        </attr>
     </declare-styleable>
 </resources>

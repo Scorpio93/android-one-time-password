@@ -26,6 +26,7 @@
         app:otpHighlightNextColor="@color/white"
         android:background="@color/black"
         app:otpTextSize="24dp"
+        app:textHolderShape="circle"
         app:otpFontFamily="@font/train_one_regular"
         tools:ignore="LabelFor" />
 
