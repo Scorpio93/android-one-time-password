@@ -1,9 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="OtpCodeView">
-        <attr name="otpLineColor" format="color" />
-        <attr name="otpLineWidth" format="dimension" />
-        <attr name="otpLineStrokeWidth" format="dimension" />
+        <!-- text holders properties -->
+        <attr name="otpTextHolderColor" format="color" />
+        <attr name="otpTextHolderWidth" format="dimension" />
+        <attr name="otpTextHolderStrokeWidth" format="dimension" />
+
+        <!-- background properties -->
+        <attr name="optBackgroundShapeColor" format="color" />
+        <attr name="otpBackgroundShapePadding" format="dimension" />
+        <attr name="otpBackgroundShapeStroke" format="dimension" />
+
+        <!-- other -->
         <attr name="otpFontFamily" format="reference" />
         <attr name="otpTextColor" format="color" />
         <attr name="otpMaxSymbolsAmount" format="integer" />

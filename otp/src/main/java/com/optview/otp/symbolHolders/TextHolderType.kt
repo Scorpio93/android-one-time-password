@@ -1,4 +1,4 @@
-package com.optview.otp.textHolders
+package com.optview.otp.symbolHolders
 
 
 enum class TextHolderType {

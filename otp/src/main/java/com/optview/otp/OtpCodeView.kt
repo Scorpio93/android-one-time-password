@@ -14,7 +14,8 @@ import android.view.inputmethod.BaseInputConnection
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputConnection
 import androidx.core.content.res.ResourcesCompat
-import com.optview.otp.textHolders.*
+import com.optview.otp.background.OutlinedBackground
+import com.optview.otp.symbolHolders.*
 
 
 private const val MIX_SYMBOL_SIZE = 4
@@ -32,9 +33,17 @@ class OtpCodeView @JvmOverloads constructor(
         )
     }
 
-    private var otpLineColor = 0
-    private var otpLineWidth = 0F
-    private var otpLineStrokeWidth = 0F
+    // text holders shape
+    private var otpTextPlaceHolderColor = 0
+    private var otpTextPlaceHolderWidth = 0F
+    private var otpTextPlaceHolderStrokeWidth = 0F
+
+    // background shape
+    private var otpBackgroundShapeColor = 0
+    private var otpBackgroundShapePadding = 0F
+    private var otpBackgroundShapeStroke = 0F
+
+    // other features
     private var otpTextColor = 0
     private var otpHighlightNextSymbol = false
     private var otpHighlightNextColor = 0
@@ -49,9 +58,18 @@ class OtpCodeView @JvmOverloads constructor(
     init {
         context.theme.obtainStyledAttributes(attrs, R.styleable.OtpCodeView, 0, 0).apply {
             try {
-                otpLineColor = typedArray.getColor(R.styleable.OtpCodeView_otpLineColor, 0)
-                otpLineWidth = typedArray.getDimension(R.styleable.OtpCodeView_otpLineWidth, 0F)
-                otpLineStrokeWidth = typedArray.getDimension(R.styleable.OtpCodeView_otpLineStrokeWidth, 0F)
+
+                // text holders properties
+                otpTextPlaceHolderColor = typedArray.getColor(R.styleable.OtpCodeView_otpTextHolderColor, 0)
+                otpTextPlaceHolderWidth = typedArray.getDimension(R.styleable.OtpCodeView_otpTextHolderWidth, 0F)
+                otpTextPlaceHolderStrokeWidth = typedArray.getDimension(R.styleable.OtpCodeView_otpTextHolderStrokeWidth, 0F)
+
+                // background properties
+                otpBackgroundShapeColor = typedArray.getColor(R.styleable.OtpCodeView_optBackgroundShapeColor, 0)
+                otpBackgroundShapePadding = typedArray.getDimension(R.styleable.OtpCodeView_otpBackgroundShapePadding, 0F)
+                otpBackgroundShapeStroke = typedArray.getDimension(R.styleable.OtpCodeView_otpBackgroundShapeStroke, 0F)
+
+                // other
                 otpMaxSymbolsAmount = typedArray.getInt(R.styleable.OtpCodeView_otpMaxSymbolsAmount, MIX_SYMBOL_SIZE)
                 otpTextColor = typedArray.getColor(R.styleable.OtpCodeView_otpTextColor, 0)
                 otpHighlightNextSymbol = typedArray.getBoolean(R.styleable.OtpCodeView_otpHighlightNextSymbol, false)
@@ -65,21 +83,22 @@ class OtpCodeView @JvmOverloads constructor(
         }
     }
 
-    private val textHolder: TextHolder = TextHolderFactory.getShape(textHolderType)
+    private val shapeTextHolder: Shape = TextHolderFactory.getShape(textHolderType)
+    private val backgroundShape : Shape = OutlinedBackground()
     private var textChangeListener: OnTextChangeListener? = null
     private val codeBuilder: StringBuilder by lazy { StringBuilder() }
 
     private val linePaint = Paint().apply {
         isAntiAlias = true
-        color = otpLineColor
-        strokeWidth = otpLineStrokeWidth
+        color = otpTextPlaceHolderColor
+        strokeWidth = otpTextPlaceHolderStrokeWidth
         strokeCap = Paint.Cap.ROUND
     }
 
     private val backgroundPaint = Paint().apply {
         isAntiAlias = true
-        color = Color.CYAN
-        alpha = 20
+        color = otpBackgroundShapeColor
+        strokeWidth = otpBackgroundShapeStroke
     }
 
     private val textPaint = TextPaint().apply {
@@ -140,16 +159,23 @@ class OtpCodeView @JvmOverloads constructor(
         for (i in 0 until otpMaxSymbolsAmount) {
             val highlightIndex = codeBuilder.length
             val needToHighlight = highlightIndex == i
-            linePaint.color =
-                if (needToHighlight and otpHighlightNextSymbol) otpHighlightNextColor else otpLineColor
+            linePaint.color = if (needToHighlight and otpHighlightNextSymbol) otpHighlightNextColor else otpTextPlaceHolderColor
 
             val currentHostStepWidth = width / otpMaxSymbolsAmount
             val halfCurrentHostWidth = currentHostStepWidth / 2F
             val halfCurrentHostHeight = height / 2F
             val currentHostWidth = currentHostStepWidth * i.toFloat()
-            val halfLineWidth = otpLineWidth / 2F
+            val halfLineWidth = otpTextPlaceHolderWidth / 2F
 
-            canvas?.drawRect(0F, 0F, currentHostWidth, currentHostWidth, backgroundPaint)
+            backgroundShape.drawHolder(
+                currentHostWidth,
+                0F,
+                currentHostWidth + currentHostStepWidth,
+                height.toFloat(),
+                otpBackgroundShapePadding,
+                backgroundPaint,
+                canvas
+            )
 
             if (inputLength > i) {
                 canvas?.drawText(
@@ -161,7 +187,7 @@ class OtpCodeView @JvmOverloads constructor(
                     textPaint
                 )
             } else {
-                textHolder.drawHolder(
+                shapeTextHolder.drawHolder(
                     currentHostWidth + halfCurrentHostWidth,
                     halfCurrentHostHeight,
                     currentHostWidth + halfCurrentHostWidth,

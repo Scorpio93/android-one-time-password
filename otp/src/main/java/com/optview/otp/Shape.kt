@@ -1,16 +1,16 @@
-package com.optview.otp.textHolders
+package com.optview.otp
 
 import android.graphics.Canvas
 import android.graphics.Paint
 
 
-interface TextHolder {
+interface Shape {
     fun drawHolder(
         startX: Float,
         startY: Float,
         stopX : Float,
         stopY : Float,
-        shapeWidth: Float,
+        padding: Float,
         paint: Paint,
         canvas: Canvas?
     )

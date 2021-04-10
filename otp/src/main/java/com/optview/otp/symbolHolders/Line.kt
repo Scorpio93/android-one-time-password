@@ -1,19 +1,20 @@
-package com.optview.otp.textHolders
+package com.optview.otp.symbolHolders
 
 import android.graphics.Canvas
 import android.graphics.Paint
+import com.optview.otp.Shape
 
 
-class EmptyTextHolder : TextHolder {
+class Line : Shape {
     override fun drawHolder(
         startX: Float,
         startY: Float,
         stopX: Float,
         stopY: Float,
-        shapeWidth: Float,
+        padding: Float,
         paint: Paint,
         canvas: Canvas?
     ) {
-        // don't draw any shapes
+        canvas?.drawLine(startX - padding, startY, stopX + padding, stopY, paint)
     }
 }
