@@ -16,6 +16,7 @@ class FillRectangleBackground : Shape {
         paint: Paint,
         canvas: Canvas?
     ) {
+        paint.style = Paint.Style.FILL
         canvas?.drawRoundRect(
             startX + padding,
             startY + padding,

@@ -90,9 +90,6 @@ class OtpCodeView @JvmOverloads constructor(
         }
     }
 
-    private val shapeTextHolder: Shape = TextHolderFactory.getShape(textHolderType)
-    private val backgroundShape : Shape = BackgroundShapeFactory.getShape(backgroundType)
-
     private var textChangeListener: OnTextChangeListener? = null
     private val codeBuilder: StringBuilder by lazy { StringBuilder() }
 
@@ -159,6 +156,9 @@ class OtpCodeView @JvmOverloads constructor(
 
     override fun onDraw(canvas: Canvas?) {
         super.onDraw(canvas)
+        val shapeTextHolder: Shape = TextHolderFactory.getShape(textHolderType)
+        val backgroundShape : Shape = BackgroundShapeFactory.getShape(backgroundType)
+
         if (otpFontFamily != 0) {
             val typeface = ResourcesCompat.getFont(context, otpFontFamily)
             textPaint.typeface = typeface
@@ -225,6 +225,16 @@ class OtpCodeView @JvmOverloads constructor(
 
     fun setTextChangeListener(changeListener: OnTextChangeListener) {
         this.textChangeListener = changeListener
+    }
+
+    fun setTextHolderShape(textHolderType: TextHolderType) {
+        this.textHolderType = textHolderType
+        invalidate()
+    }
+
+    fun setBackgroundShape(backgroundShapeType: BackgroundShapeType) {
+        this.backgroundType = backgroundShapeType
+        invalidate()
     }
 
     override fun onDetachedFromWindow() {

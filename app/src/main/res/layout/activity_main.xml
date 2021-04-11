@@ -1,41 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity"
-    android:background="@android:color/holo_blue_dark">
+    android:background="@android:color/black">
 
-    <com.optview.otp.OtpCodeView
-        android:id="@+id/editTextOtp"
-        android:layout_width="0dp"
-        android:layout_height="55dp"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity">
 
-        app:otpTextHolderColor="@color/teal_700"
-        app:otpTextHolderWidth="16dp"
-        app:otpTextHolderStrokeWidth="2dp"
-        app:otpHighlightTextHolderColor="@android:color/white"
-        app:otpTextHolderShape="circle"
+        <com.optview.otp.OtpCodeView
+            android:id="@+id/editTextOtp"
+            android:layout_width="0dp"
+            android:layout_height="55dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="32dp"
+            android:layout_marginEnd="24dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
 
-        app:optBackgroundShapeColor="@color/teal_700"
-        app:otpBackgroundShapePadding="6dp"
-        app:otpBackgroundShapeStroke="2dp"
-        app:otpBackgroundRoundedCorners="4dp"
-        app:otpBackgroundHighlightColor="@color/white"
-        app:otpBackgroundShape="outlinedRectangle"
+            app:optBackgroundShapeColor="@color/teal_700"
+            app:otpBackgroundHighlightColor="@color/white"
+            app:otpBackgroundRoundedCorners="4dp"
+            app:otpBackgroundShape="none"
+            app:otpBackgroundShapePadding="6dp"
+            app:otpBackgroundShapeStroke="2dp"
 
-        app:otpTextColor="@android:color/white"
-        app:otpMaxSymbolsAmount="5"
-        app:otpTextSize="24dp"
-        app:otpFontFamily="@font/train_one_regular"
-        tools:ignore="LabelFor" />
+            app:otpFontFamily="@font/train_one_regular"
+            app:otpHighlightTextHolderColor="@android:color/white"
+            app:otpTextColor="@android:color/white"
+            app:otpTextHolderColor="@color/teal_700"
+            app:otpTextHolderShape="none"
+            app:otpTextHolderStrokeWidth="2dp"
+            app:otpTextHolderWidth="16dp"
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            app:otpMaxSymbolsAmount="5"
+            app:otpTextSize="24dp"
+            tools:ignore="LabelFor" />
+
+        <LinearLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="16dp"
+            android:orientation="vertical"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/editTextOtp">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:text="Text holder shape:"/>
+
+            <RadioGroup
+                android:id="@+id/rgTextHolderShape"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checkedButton="@id/rbTextNone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editTextOtp">
+
+                <RadioButton
+                    android:id="@+id/rbTextNone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="None"
+                    android:textColor="@color/white"/>
+
+                <RadioButton
+                    android:id="@+id/rbTextLine"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Line"
+                    android:textColor="@color/white"/>
+
+                <RadioButton
+                    android:id="@+id/rbTextCircle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Circle"
+                    android:textColor="@color/white"/>
+            </RadioGroup>
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/white"
+                android:layout_marginTop="12dp"
+                android:text="Background shape:"/>
+
+            <RadioGroup
+                android:id="@+id/rgBackgroundShape"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:checkedButton="@id/rbBackgroundNone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/editTextOtp">
+
+                <RadioButton
+                    android:id="@+id/rbBackgroundNone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="None"
+                    android:textColor="@color/white"/>
+
+                <RadioButton
+                    android:id="@+id/rbBackgroundOutlinedRectangle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Outlined rectangle"
+                    android:textColor="@color/white"/>
+
+                <RadioButton
+                    android:id="@+id/rbBackgroundFillRectangle"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Fill rectangle"
+                    android:textColor="@color/white"/>
+
+                <RadioButton
+                    android:id="@+id/rbBackgroundBottomLine"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Bottom line"
+                    android:textColor="@color/white"/>
+            </RadioGroup>
+
+
+        </LinearLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>
