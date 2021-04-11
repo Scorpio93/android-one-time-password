@@ -16,21 +16,12 @@
             android:id="@+id/editTextOtp"
             android:layout_width="0dp"
             android:layout_height="55dp"
-            android:layout_marginStart="24dp"
-            android:layout_marginTop="32dp"
-            android:layout_marginEnd="24dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintHorizontal_bias="0.5"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-
             app:optBackgroundShapeColor="@color/teal_700"
             app:otpBackgroundHighlightColor="@color/white"
             app:otpBackgroundRoundedCorners="4dp"
             app:otpBackgroundShape="none"
             app:otpBackgroundShapePadding="6dp"
             app:otpBackgroundShapeStroke="2dp"
-
             app:otpFontFamily="@font/train_one_regular"
             app:otpHighlightTextHolderColor="@android:color/white"
             app:otpTextColor="@android:color/white"
@@ -38,10 +29,8 @@
             app:otpTextHolderShape="none"
             app:otpTextHolderStrokeWidth="2dp"
             app:otpTextHolderWidth="16dp"
-
-            app:otpMaxLength="5"
-            app:otpTextSize="24dp"
-            tools:ignore="LabelFor" />
+            app:otpMaxLength="6"
+            app:otpTextSize="24dp" />
 
         <LinearLayout
             android:layout_width="0dp"

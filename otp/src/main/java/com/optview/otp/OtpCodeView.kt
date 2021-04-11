@@ -90,7 +90,7 @@ class OtpCodeView @JvmOverloads constructor(
         }
     }
 
-    private var textChangeListener: OnTextChangeListener? = null
+    private var textChangeBlock: ((String) -> Unit?)? = null
     private val codeBuilder: StringBuilder by lazy { StringBuilder() }
 
     private val textHolderPaint = Paint().apply {
@@ -149,7 +149,7 @@ class OtpCodeView @JvmOverloads constructor(
         }
 
         if (codeBuilder.length >= otpMaxSymbolsAmount || keyCode == KeyEvent.KEYCODE_ENTER) {
-            textChangeListener?.textEntered(codeBuilder.toString())
+            textChangeBlock?.invoke(codeBuilder.toString())
         }
         return super.onKeyDown(keyCode, event)
     }
@@ -217,14 +217,14 @@ class OtpCodeView @JvmOverloads constructor(
 
     fun setText(code: String) {
         if (code.length > otpMaxSymbolsAmount) return
-        if (code.length == otpMaxSymbolsAmount) textChangeListener?.textEntered(code)
+        if (code.length == otpMaxSymbolsAmount) textChangeBlock?.invoke(code)
         if (codeBuilder.isNotBlank()) codeBuilder.clear()
         codeBuilder.append(code)
         invalidate()
     }
 
-    fun setTextChangeListener(changeListener: OnTextChangeListener) {
-        this.textChangeListener = changeListener
+    fun setOtpCodeFinishListener(codeListenerBlock: (code : String) -> Unit) {
+        this.textChangeBlock = codeListenerBlock
     }
 
     fun setTextHolderShape(textHolderType: TextHolderType) {
@@ -239,6 +239,6 @@ class OtpCodeView @JvmOverloads constructor(
 
     override fun onDetachedFromWindow() {
         super.onDetachedFromWindow()
-        textChangeListener = null
+        this.textChangeBlock = null
     }
 }
