@@ -39,7 +39,7 @@
             app:otpTextHolderStrokeWidth="2dp"
             app:otpTextHolderWidth="16dp"
 
-            app:otpMaxSymbolsAmount="5"
+            app:otpMaxLength="5"
             app:otpTextSize="24dp"
             tools:ignore="LabelFor" />
 
