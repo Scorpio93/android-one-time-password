@@ -6,22 +6,25 @@ import com.optview.otp.Shape
 
 
 
-class OutlinedBackground : Shape {
+class OutlinedRectangleBackground : Shape {
     override fun drawHolder(
         startX: Float,
         startY: Float,
         stopX: Float,
         stopY: Float,
         padding: Float,
+        corners: Float,
         paint: Paint,
         canvas: Canvas?
     ) {
         paint.style = Paint.Style.STROKE
-        canvas?.drawRect(
+        canvas?.drawRoundRect(
             startX + padding,
             startY + padding,
             stopX - padding,
             stopY - padding,
+            corners,
+            corners,
             paint
         )
     }

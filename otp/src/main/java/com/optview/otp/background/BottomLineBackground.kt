@@ -1,11 +1,11 @@
-package com.optview.otp.symbolHolders
+package com.optview.otp.background
 
 import android.graphics.Canvas
 import android.graphics.Paint
 import com.optview.otp.Shape
 
 
-class Empty : Shape {
+class BottomLineBackground : Shape {
     override fun drawHolder(
         startX: Float,
         startY: Float,
@@ -16,6 +16,6 @@ class Empty : Shape {
         paint: Paint,
         canvas: Canvas?
     ) {
-        // don't draw any shapes
+        canvas?.drawLine(startX + padding, stopY, stopX - padding, stopY, paint)
     }
 }

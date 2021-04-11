@@ -5,24 +5,32 @@
         <attr name="otpTextHolderColor" format="color" />
         <attr name="otpTextHolderWidth" format="dimension" />
         <attr name="otpTextHolderStrokeWidth" format="dimension" />
+        <attr name="otpHighlightTextHolderColor" format="color" />
+
+        <attr name="otpTextHolderShape" format="enum">
+            <enum name="none" value="0" />
+            <enum name="line" value="1" />
+            <enum name="circle" value="2" />
+        </attr>
 
         <!-- background properties -->
         <attr name="optBackgroundShapeColor" format="color" />
         <attr name="otpBackgroundShapePadding" format="dimension" />
         <attr name="otpBackgroundShapeStroke" format="dimension" />
+        <attr name="otpBackgroundRoundedCorners" format="dimension" />
+        <attr name="otpBackgroundHighlightColor" format="color" />
+
+        <attr name="otpBackgroundShape" format="enum">
+            <enum name="none" value="0" />
+            <enum name="fillRectangle" value="1" />
+            <enum name="outlinedRectangle" value="2" />
+            <enum name="bottomLine" value="3" />
+        </attr>
 
         <!-- other -->
         <attr name="otpFontFamily" format="reference" />
         <attr name="otpTextColor" format="color" />
         <attr name="otpMaxSymbolsAmount" format="integer" />
-        <attr name="otpHighlightNextSymbol" format="boolean" />
-        <attr name="otpHighlightNextColor" format="color" />
         <attr name="otpTextSize" format="dimension" />
-
-        <attr name="textHolderShape" format="enum">
-            <enum name="none" value="0" />
-            <enum name="line" value="1" />
-            <enum name="circle" value="2" />
-        </attr>
     </declare-styleable>
 </resources>

@@ -11,6 +11,7 @@ interface Shape {
         stopX : Float,
         stopY : Float,
         padding: Float,
+        corners : Float = 0F,
         paint: Paint,
         canvas: Canvas?
     )

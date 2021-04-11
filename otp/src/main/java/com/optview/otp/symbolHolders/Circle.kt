@@ -12,6 +12,7 @@ class Circle : Shape {
         stopX: Float,
         stopY: Float,
         padding: Float,
+        corners: Float,
         paint: Paint,
         canvas: Canvas?
     ) {

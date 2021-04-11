@@ -4,7 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".MainActivity"
+    android:background="@android:color/holo_blue_dark">
 
     <com.optview.otp.OtpCodeView
         android:id="@+id/editTextOtp"
@@ -17,18 +18,23 @@
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
+
         app:otpTextHolderColor="@android:color/darker_gray"
         app:otpTextHolderWidth="16dp"
         app:otpTextHolderStrokeWidth="2dp"
-        app:otpTextColor="@android:color/darker_gray"
-        app:otpMaxSymbolsAmount="5"
+        app:otpHighlightTextHolderColor="@android:color/white"
+        app:otpTextHolderShape="circle"
+
         app:optBackgroundShapeColor="@color/teal_700"
-        app:otpBackgroundShapePadding="4dp"
-        app:otpBackgroundShapeStroke="4dp"
-        app:otpHighlightNextSymbol="true"
-        app:otpHighlightNextColor="@color/teal_200"
+        app:otpBackgroundShapePadding="6dp"
+        app:otpBackgroundShapeStroke="1dp"
+        app:otpBackgroundRoundedCorners="4dp"
+        app:otpBackgroundHighlightColor="@color/white"
+        app:otpBackgroundShape="fillRectangle"
+
+        app:otpTextColor="@android:color/white"
+        app:otpMaxSymbolsAmount="5"
         app:otpTextSize="24dp"
-        app:textHolderShape="line"
         app:otpFontFamily="@font/train_one_regular"
         tools:ignore="LabelFor" />
 
