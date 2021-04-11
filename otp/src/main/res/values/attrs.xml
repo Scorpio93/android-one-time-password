@@ -30,7 +30,7 @@
         <!-- other -->
         <attr name="otpFontFamily" format="reference" />
         <attr name="otpTextColor" format="color" />
-        <attr name="otpMaxSymbolsAmount" format="integer" />
+        <attr name="otpMaxLength" format="integer" />
         <attr name="otpTextSize" format="dimension" />
     </declare-styleable>
 </resources>

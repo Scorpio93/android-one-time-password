@@ -80,7 +80,7 @@ class OtpCodeView @JvmOverloads constructor(
                 backgroundType = typedArray.getEnum(R.styleable.OtpCodeView_otpBackgroundShape, BackgroundShapeType.NONE)
 
                 // other
-                otpMaxSymbolsAmount = typedArray.getInt(R.styleable.OtpCodeView_otpMaxSymbolsAmount, MIX_SYMBOL_SIZE)
+                otpMaxSymbolsAmount = typedArray.getInt(R.styleable.OtpCodeView_otpMaxLength, MIX_SYMBOL_SIZE)
                 otpTextColor = typedArray.getColor(R.styleable.OtpCodeView_otpTextColor, 0)
                 otpTextSize = typedArray.getDimension(R.styleable.OtpCodeView_otpTextSize, 0f)
                 otpFontFamily = typedArray.getResourceId(R.styleable.OtpCodeView_otpFontFamily, 0)
