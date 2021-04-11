@@ -19,7 +19,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
 
-        app:otpTextHolderColor="@android:color/darker_gray"
+        app:otpTextHolderColor="@color/teal_700"
         app:otpTextHolderWidth="16dp"
         app:otpTextHolderStrokeWidth="2dp"
         app:otpHighlightTextHolderColor="@android:color/white"
@@ -27,10 +27,10 @@
 
         app:optBackgroundShapeColor="@color/teal_700"
         app:otpBackgroundShapePadding="6dp"
-        app:otpBackgroundShapeStroke="1dp"
+        app:otpBackgroundShapeStroke="2dp"
         app:otpBackgroundRoundedCorners="4dp"
         app:otpBackgroundHighlightColor="@color/white"
-        app:otpBackgroundShape="fillRectangle"
+        app:otpBackgroundShape="outlinedRectangle"
 
         app:otpTextColor="@android:color/white"
         app:otpMaxSymbolsAmount="5"

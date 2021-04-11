@@ -16,6 +16,7 @@ class BottomLineBackground : Shape {
         paint: Paint,
         canvas: Canvas?
     ) {
-        canvas?.drawLine(startX + padding, stopY, stopX - padding, stopY, paint)
+        paint.strokeCap = Paint.Cap.ROUND
+        canvas?.drawLine(startX + padding, stopY - padding, stopX - padding, stopY - padding, paint)
     }
 }
