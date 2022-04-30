@@ -15,7 +15,7 @@ allprojects {
 2. Add the dependency to your application gradle file:
 ```javascript
 dependencies {
-    implementation 'com.github.Scorpio93:android-one-time-password:1.0.0'
+    implementation 'com.github.Scorpio93:android-one-time-password:1.0.1'
 }
 ```
 
