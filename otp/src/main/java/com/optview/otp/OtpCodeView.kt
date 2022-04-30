@@ -223,6 +223,8 @@ class OtpCodeView @JvmOverloads constructor(
         invalidate()
     }
 
+    fun getText() = codeBuilder.toString()
+
     fun setOtpCodeFinishListener(codeListenerBlock: (code : String) -> Unit) {
         this.textChangeBlock = codeListenerBlock
     }
